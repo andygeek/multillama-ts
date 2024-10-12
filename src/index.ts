@@ -1,35 +1,54 @@
 import ConfigManager, { Config } from './config/ConfigManager.js';
-import { OllamaAdapter } from './adapters/OllamaAdapter.js';
+import { Orchestrator } from './orchestrator/Orchestrator.js';
 
 export { Orchestrator } from './orchestrator/Orchestrator.js';
-export { OllamaAdapter } from './adapters/OllamaAdapter.js';  // Asegúrate de exportar OllamaAdapter
+export { OllamaAdapter } from './adapters/OllamaAdapter.js';
 export { Pipeline } from './pipeline/Pipeline.js';
 
-
 export class MultiLlama {
-  private ollamaAdapter: OllamaAdapter;
+  private orchestrator: Orchestrator;
 
   constructor() {
-    this.ollamaAdapter = new OllamaAdapter();
-    // Puedes inicializar más adaptadores aquí si es necesario
+    this.orchestrator = new Orchestrator();
   }
 
-  // Método para inicializar la configuración global del framework
+  // Inicializar MultiLlama con una configuración
   public static initialize(config: Config): void {
     ConfigManager.initialize(config);
   }
 
-  // Método para usar Ollama
-  public async useOllama(prompt: string): Promise<void> {
-    const response = await this.ollamaAdapter.run(prompt);
-    console.log(response.data);        // Muestra la respuesta principal
-    console.log(response.metadata);    // Muestra información adicional
+  // Inicializar MultiLlama desde un archivo de configuración JSON
+  public static initializeFromFile(filePath: string): void {
+    ConfigManager.initializeFromFile(filePath);
   }
 
-  // Método para usar Ollama con streaming
-  public async useOllamaWithStreaming(prompt: string): Promise<void> {
-    await this.ollamaAdapter.runWithStreaming(prompt, (chunk) => {
-      process.stdout.write(chunk);  // Muestra el chunk recibido
-    });
+  // Guardar la configuración actual en un archivo JSON
+  public static saveConfigToFile(filePath: string): void {
+    ConfigManager.saveConfigToFile(filePath);
+  }
+
+  // Registrar un adaptador para un servicio
+  public registerAdapter(modelName: string, adapter: any): void {
+    this.orchestrator.registerAdapter(modelName, adapter);
+  }
+
+  // Método para usar un modelo directamente
+  public async useModel(modelName: string, prompt: string): Promise<string> {
+    return await this.orchestrator.useModel(modelName, prompt);
+  }
+
+  // Método para ejecutar un pipeline secuencial
+  public async runSequentialPipeline(pipeline: any, initialInput: string): Promise<string> {
+    return await this.orchestrator.runSequentialPipeline(pipeline, initialInput);
+  }
+
+  // Método para ejecutar un pipeline paralelo
+  public async runParallelPipeline(pipeline: any, initialInput: string): Promise<string[]> {
+    return await this.orchestrator.runParallelPipeline(pipeline, initialInput);
+  }
+
+  // Método para ejecutar un pipeline condicional
+  public async runConditionalPipeline(pipeline: any, initialInput: string): Promise<string> {
+    return await this.orchestrator.runConditionalPipeline(pipeline, initialInput);
   }
 }
