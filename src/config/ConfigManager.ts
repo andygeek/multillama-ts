@@ -1,6 +1,13 @@
-import { Options as OraOptions } from 'ora';  // Importa el tipo de opciones desde ora
+import { Options as OraOptions } from 'ora';
+import { BaseAdapter } from '../adapters/BaseAdapter.js';
+
+export interface ServiceConfig {
+  apiKey?: string;
+  adapter: BaseAdapter;
+}
 
 export interface ModelConfig {
+  service: ServiceConfig;
   name: string;
   defaultRole: { role: string; content: string };
   stream?: boolean;
@@ -14,6 +21,7 @@ export interface SpinnerConfig {
 }
 
 export interface Config {
+  services: Record<string, ServiceConfig>;
   models: Record<string, ModelConfig>;
   spinnerConfig?: SpinnerConfig;
 }
@@ -45,6 +53,15 @@ class ConfigManager {
       throw new Error(`Model ${modelName} is not configured.`);
     }
     return modelConfig;
+  }
+
+  public static getServiceConfig(serviceName: string): ServiceConfig {
+    const config = ConfigManager.getConfig();
+    const serviceConfig = config.services[serviceName];
+    if (!serviceConfig) {
+      throw new Error(`Service ${serviceName} is not configured.`);
+    }
+    return serviceConfig;
   }
 
   public static getSpinnerConfig(): SpinnerConfig | undefined {
