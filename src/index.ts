@@ -36,14 +36,4 @@ export class MultiLlama {
   public async runSequentialPipeline(pipeline: any, initialInput: string): Promise<string> {
     return await this.orchestrator.runSequentialPipeline(pipeline, initialInput);
   }
-
-  // Método para ejecutar un pipeline paralelo
-  public async runParallelPipeline(pipeline: any, initialInput: string): Promise<string[]> {
-    return await this.orchestrator.runParallelPipeline(pipeline, initialInput);
-  }
-
-  // Método para ejecutar un pipeline condicional
-  public async runConditionalPipeline(pipeline: any, initialInput: string): Promise<string> {
-    return await this.orchestrator.runConditionalPipeline(pipeline, initialInput);
-  }
 }
