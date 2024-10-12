@@ -1,3 +1,4 @@
+import { AdapterResponse } from './adapters/BaseAdapter.js';
 import ConfigManager, { Config } from './config/ConfigManager.js';
 import { Orchestrator } from './orchestrator/Orchestrator.js';
 
@@ -28,7 +29,7 @@ export class MultiLlama {
   }
 
   // Método para usar un modelo directamente
-  public async useModel(modelName: string, prompt: string): Promise<string> {
+  public async useModel(modelName: string, prompt: string): Promise<String> {
     return await this.orchestrator.useModel(modelName, prompt);
   }
 
