@@ -11,7 +11,7 @@ export interface ServiceConfig {
 export interface ModelConfig {
   service: ServiceConfig;
   name: string;
-  defaultRole: { role: string; content: string };
+  role: string;
   stream?: boolean;
 }
 

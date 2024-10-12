@@ -10,7 +10,7 @@ export class OllamaAdapter implements BaseAdapter<string> {
     try {
       const response = await ollama.chat({
         model: modelConfig.name,
-        messages: [{ role: modelConfig.defaultRole.role, content: prompt }],
+        messages: [{ role: modelConfig.role, content: prompt }],
       });
       return {
         data: response.message.content,
