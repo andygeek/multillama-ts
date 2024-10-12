@@ -31,6 +31,7 @@ MultiLlama.initialize({
   services: {
     ollamaService: {
       adapter: new OllamaAdapter(),
+      apiKey: 'xxx'
     },
   },
   models: {
@@ -39,7 +40,7 @@ MultiLlama.initialize({
         adapter: new OllamaAdapter(),
       },
       name: 'ollama-model-name',
-      defaultRole: { role: 'user', content: '' },
+      role: 'user',
     },
   },
   spinnerConfig: {
@@ -153,10 +154,7 @@ interface SpinnerConfig {
         "adapter": "OllamaAdapter"
       },
       "name": "ollama-model-name",
-      "defaultRole": {
-        "role": "user",
-        "content": ""
-      }
+      "role": "user"
     }
   },
   "spinnerConfig": {
