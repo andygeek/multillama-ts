@@ -11,5 +11,4 @@ export interface AdapterResponse<T = string> {
 
 export interface BaseAdapter<T = string> {
   run(prompt: string, options?: RunOptions): Promise<AdapterResponse<T>>;
-  runWithStreaming?(prompt: string, onData: (chunk: T) => void, options?: RunOptions): Promise<void>;
 }

@@ -49,14 +49,4 @@ export class Orchestrator {
 
     return response.data;
   }
-
-  public async useModelWithStreaming(modelName: string, prompt: string, onData: (chunk: string) => void): Promise<void> {
-    const adapter = this.getAdapter(modelName);
-
-    if (adapter.runWithStreaming) {
-      await adapter.runWithStreaming(prompt, onData);
-    } else {
-      throw new Error(`Model ${modelName} does not support streaming`);
-    }
-  }
 }
