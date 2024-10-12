@@ -7,20 +7,17 @@ import ora, { Ora } from 'ora';
 import { PluginManager } from '../plugins/PluginManager.js';  // Importamos el PluginManager
 
 export class Orchestrator {
-  private adapters: Record<string, BaseAdapter<any>> = {};
 
-  // Método para registrar adaptadores
-  public registerAdapter(modelName: string, adapter: BaseAdapter<any>): void {
-    this.adapters[modelName] = adapter;
-  }
-
-  // Método para obtener el adaptador de un modelo registrado
+  // Método para obtener el adaptador directamente desde la configuración del modelo
   private getAdapter(modelName: string): BaseAdapter<any> {
-    const adapter = this.adapters[modelName];
-    if (!adapter) {
-      throw new Error(`No adapter registered for model: ${modelName}`);
+    const modelConfig = ConfigManager.getModelConfig(modelName);
+    const serviceConfig = modelConfig.service;
+
+    if (!serviceConfig.adapter) {
+      throw new Error(`No adapter configured for service in model: ${modelName}`);
     }
-    return adapter;
+
+    return serviceConfig.adapter;
   }
 
   // Método para iniciar el spinner con configuración personalizada
@@ -97,7 +94,7 @@ export class Orchestrator {
 
   // Método para usar un modelo directamente con soporte para plugins
   public async useModel(modelName: string, prompt: string): Promise<string> {
-    const adapter = this.getAdapter(modelName);
+    const adapter = this.getAdapter(modelName);  // Obtenemos el adaptador del servicio asociado
 
     // Ejecutar plugins antes de la llamada al modelo
     const modifiedPrompt = await PluginManager.runBeforeModelCall(modelName, prompt);
@@ -112,7 +109,7 @@ export class Orchestrator {
 
   // Método para manejar streaming con plugins
   public async useModelWithStreaming(modelName: string, prompt: string, onData: (chunk: string) => void): Promise<void> {
-    const adapter = this.getAdapter(modelName);
+    const adapter = this.getAdapter(modelName);  // Obtenemos el adaptador del servicio asociado
 
     // Ejecutar plugins antes de la llamada al modelo
     const modifiedPrompt = await PluginManager.runBeforeModelCall(modelName, prompt);

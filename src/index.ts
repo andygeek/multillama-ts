@@ -27,11 +27,6 @@ export class MultiLlama {
     ConfigManager.saveConfigToFile(filePath);
   }
 
-  // Registrar un adaptador para un servicio
-  public registerAdapter(modelName: string, adapter: any): void {
-    this.orchestrator.registerAdapter(modelName, adapter);
-  }
-
   // Método para usar un modelo directamente
   public async useModel(modelName: string, prompt: string): Promise<string> {
     return await this.orchestrator.useModel(modelName, prompt);
