@@ -1,5 +1,7 @@
 import { Options as OraOptions } from 'ora';
 import { BaseAdapter } from '../adapters/BaseAdapter.js';
+import fs from 'fs';
+import path from 'path';
 
 export interface ServiceConfig {
   apiKey?: string;
@@ -37,6 +39,29 @@ class ConfigManager {
       ConfigManager.instance = new ConfigManager();
     }
     ConfigManager.instance.config = config;
+  }
+
+  public static initializeFromFile(filePath: string): void {
+    const absolutePath = path.resolve(filePath);
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error(`Configuration file not found at ${absolutePath}`);
+    }
+
+    const fileContent = fs.readFileSync(absolutePath, 'utf-8');
+    const parsedConfig: Config = JSON.parse(fileContent);
+
+    ConfigManager.initialize(parsedConfig);
+  }
+
+  public static saveConfigToFile(filePath: string): void {
+    if (!ConfigManager.instance || !ConfigManager.instance.config) {
+      throw new Error('ConfigManager has not been initialized.');
+    }
+
+    const absolutePath = path.resolve(filePath);
+    const configJson = JSON.stringify(ConfigManager.instance.config, null, 2);
+
+    fs.writeFileSync(absolutePath, configJson, 'utf-8');
   }
 
   public static getConfig(): Config {
