@@ -15,5 +15,5 @@ export interface AdapterResponse<T = string> {
 }
 
 export interface BaseAdapter<T = string> {
-  run(prompt: string, options?: RunOptions): Promise<AdapterResponse<T>>;
+  run(prompt: string, modelName: string, options?: RunOptions): Promise<AdapterResponse<T>>;
 }

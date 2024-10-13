@@ -44,8 +44,7 @@ export class Orchestrator {
 
   public async useModel(modelName: string, prompt: string): Promise<String> {
     const adapter = this.getAdapter(modelName);
-
-    const response = await adapter.run(prompt);
+    const response = await adapter.run(prompt, modelName);
 
     return response.data;
   }

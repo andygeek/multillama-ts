@@ -4,8 +4,8 @@ import ConfigManager from '../config/ConfigManager.js';
 
 
 export class OpenAIAdapter implements BaseAdapter<string> {
-  async run(prompt: string, options?: RunOptions): Promise<AdapterResponse<string>> {
-    const modelName = options?.model || 'openai';
+  async run(prompt: string, modelName: string): Promise<AdapterResponse<string>> {
+    
     const modelConfig = ConfigManager.getModelConfig(modelName);
     const serviceConfig = modelConfig.service;
 
@@ -19,11 +19,11 @@ export class OpenAIAdapter implements BaseAdapter<string> {
       const response = await openai.chat.completions.create({
         model: modelConfig.name,
         messages: [{ role: 'user', content: prompt }],
-        temperature: options?.temperature ?? 1,
-        max_tokens: options?.max_tokens ?? 100,
-        top_p: options?.top_p ?? 1,
-        frequency_penalty: options?.frequency_penalty ?? 0,
-        presence_penalty: options?.presence_penalty ?? 0,
+        temperature: 1,
+        max_tokens: 100,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
         stream: false,
       });
 
