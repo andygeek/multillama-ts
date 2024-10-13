@@ -3,8 +3,10 @@ import { BaseAdapter, AdapterResponse } from './BaseAdapter.js';
 import { ConfigManager } from '../config/ConfigManager.js';
 
 export class OllamaAdapter implements BaseAdapter<string> {
-
-  async run(prompt: string, modelName: string): Promise<AdapterResponse<string>> {
+  async run(
+    prompt: string,
+    modelName: string,
+  ): Promise<AdapterResponse<string>> {
     const modelConfig = ConfigManager.getModelConfig(modelName);
     try {
       const response = await ollama.chat({

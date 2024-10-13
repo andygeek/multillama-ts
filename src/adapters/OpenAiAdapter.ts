@@ -3,13 +3,17 @@ import { BaseAdapter, AdapterResponse } from './BaseAdapter.js';
 import { ConfigManager } from '../config/ConfigManager.js';
 
 export class OpenAIAdapter implements BaseAdapter<string> {
-  async run(prompt: string, modelName: string): Promise<AdapterResponse<string>> {
-    
+  async run(
+    prompt: string,
+    modelName: string,
+  ): Promise<AdapterResponse<string>> {
     const modelConfig = ConfigManager.getModelConfig(modelName);
     const serviceConfig = modelConfig.service;
 
     if (!serviceConfig.apiKey) {
-      throw new Error(`No API key configured for service in model: ${modelName}`);
+      throw new Error(
+        `No API key configured for service in model: ${modelName}`,
+      );
     }
 
     const openai = new OpenAI({ apiKey: serviceConfig.apiKey });
@@ -24,9 +28,10 @@ export class OpenAIAdapter implements BaseAdapter<string> {
         frequency_penalty: 0,
         presence_penalty: 0,
         stream: false,
-        response_format: modelConfig.response_format == 'json'
-          ? { 'type': 'json_object' } 
-          : { 'type': 'text'},
+        response_format:
+          modelConfig.response_format == 'json'
+            ? { type: 'json_object' }
+            : { type: 'text' },
       });
 
       return {

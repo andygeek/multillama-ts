@@ -1,5 +1,6 @@
 import { Orchestrator } from './orchestrator/Orchestrator.js';
 import ConfigManager, { Config } from './config/ConfigManager.js';
+import { Pipeline } from './pipeline/Pipeline.js';
 
 export class MultiLlama {
   private orchestrator: Orchestrator;
@@ -20,11 +21,17 @@ export class MultiLlama {
     ConfigManager.saveConfigToFile(filePath);
   }
 
-  public async useModel(modelName: string, prompt: string): Promise<String> {
+  public async useModel(modelName: string, prompt: string): Promise<string> {
     return await this.orchestrator.useModel(modelName, prompt);
   }
 
-  public async runSequentialPipeline(pipeline: any, initialInput: string): Promise<string> {
-    return await this.orchestrator.runSequentialPipeline(pipeline, initialInput);
+  public async runSequentialPipeline(
+    pipeline: Pipeline<string>,
+    initialInput: string,
+  ): Promise<string> {
+    return await this.orchestrator.runSequentialPipeline(
+      pipeline,
+      initialInput,
+    );
   }
 }

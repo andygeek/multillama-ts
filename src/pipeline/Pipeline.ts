@@ -1,9 +1,14 @@
 import { BaseAdapter } from '../adapters/BaseAdapter.js';
 
-export type PipelineStep<I, O> = (input: I, adapter: BaseAdapter<any>, initialMessage: string) => Promise<O>;
+export type PipelineStep<I, O> = (
+  input: I,
+  adapter: BaseAdapter<any>,
+  initialMessage: string,
+) => Promise<O>;
 
 export class Pipeline<I = string, O = string> {
-  private steps: { step: PipelineStep<any, any>, adapter: BaseAdapter<any> }[] = [];
+  private steps: { step: PipelineStep<any, any>; adapter: BaseAdapter<any> }[] =
+    [];
   private initialMessage: string | null = null;
   private loggingEnabled: boolean = false;
 
@@ -12,13 +17,17 @@ export class Pipeline<I = string, O = string> {
     return this;
   }
 
-  public addStep<I, O>(step: PipelineStep<I, O>, adapter: BaseAdapter<any>): this {
+  public addStep<I, O>(
+    step: PipelineStep<I, O>,
+    adapter: BaseAdapter<any>,
+  ): this {
     this.steps.push({ step, adapter });
     return this;
   }
 
   public async execute(initialInput: I): Promise<O> {
-    this.initialMessage = typeof initialInput === 'string' ? initialInput : null;
+    this.initialMessage =
+      typeof initialInput === 'string' ? initialInput : null;
     let result: any = initialInput;
 
     for (const { step, adapter } of this.steps) {
@@ -28,7 +37,6 @@ export class Pipeline<I = string, O = string> {
         if (this.loggingEnabled) {
           console.log(`Step Result:`, result);
         }
-
       } catch (error) {
         console.error('Error in pipeline step:', error);
         throw error;
