@@ -1,6 +1,6 @@
 import ollama from 'ollama';
 import { BaseAdapter, AdapterResponse } from './BaseAdapter.js';
-import ConfigManager from '../config/ConfigManager.js';
+import { ConfigManager } from '../config/ConfigManager.js';
 
 export class OllamaAdapter implements BaseAdapter<string> {
 
@@ -10,6 +10,7 @@ export class OllamaAdapter implements BaseAdapter<string> {
       const response = await ollama.chat({
         model: modelConfig.name,
         messages: [{ role: modelConfig.role, content: prompt }],
+        format: modelConfig.response_format,
       });
       return {
         data: response.message.content,

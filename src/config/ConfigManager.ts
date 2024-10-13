@@ -12,6 +12,7 @@ export interface ModelConfig {
   service: ServiceConfig;
   name: string;
   role: string;
+  response_format: 'text' | 'json';
   stream?: boolean;
 }
 
@@ -28,7 +29,7 @@ export interface Config {
   spinnerConfig?: SpinnerConfig;
 }
 
-class ConfigManager {
+export class ConfigManager {
   private static instance: ConfigManager;
   private config: Config | null = null;
 

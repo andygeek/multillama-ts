@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
-import { BaseAdapter, AdapterResponse, RunOptions } from './BaseAdapter.js';
-import ConfigManager from '../config/ConfigManager.js';
-
+import { BaseAdapter, AdapterResponse } from './BaseAdapter.js';
+import { ConfigManager } from '../config/ConfigManager.js';
 
 export class OpenAIAdapter implements BaseAdapter<string> {
   async run(prompt: string, modelName: string): Promise<AdapterResponse<string>> {
@@ -20,11 +19,14 @@ export class OpenAIAdapter implements BaseAdapter<string> {
         model: modelConfig.name,
         messages: [{ role: 'user', content: prompt }],
         temperature: 1,
-        max_tokens: 100,
+        max_tokens: 400,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
         stream: false,
+        response_format: modelConfig.response_format == 'json'
+          ? { 'type': 'json_object' } 
+          : { 'type': 'text'},
       });
 
       return {
