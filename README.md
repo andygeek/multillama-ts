@@ -1,6 +1,19 @@
 # MultiLlama
 
-**MultiLlama** is a versatile TypeScript library designed to orchestrate multiple language models seamlessly. It provides an abstraction layer over different AI models and services, allowing developers to integrate and utilize various models like OpenAI's GPT and Ollama models effortlessly.
+MultiLlama 🦙🦙🦙 is an innovative TypeScript framework that helps developers use multiple Large Language Models (LLMs) simultaneously. Designed to unify different AI models, MultiLlama enables the creation of dynamic decision flows and manages complex processes, leveraging the strengths of each AI model together.
+
+---
+
+## Supported Services
+
+MultiLlama currently supports the following services:
+
+- ✅ **OpenAI**
+- ✅ **Ollama**
+- ⏳ **Gemini** *(coming soon)*
+- ⏳ **Claude** *(coming soon)*
+
+---
 
 ## Table of Contents
 
