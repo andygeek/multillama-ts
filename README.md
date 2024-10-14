@@ -3,7 +3,7 @@
 MultiLlama 🦙🦙🦙 is an innovative TypeScript framework that helps developers use multiple Large Language Models (LLMs) simultaneously. Designed to unify different AI models, MultiLlama enables the creation of dynamic decision flows and manages complex processes, leveraging the strengths of each AI model together.
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/andygeek/multillama-ts/refs/heads/master/assets/logo.png" alt="Descripción de la imagen" height="200px" />
+  <img src="https://i.imgur.com/4fZ0ydN.png" alt="Descripción de la imagen" height="200px" />
 </div>
 
 ---
