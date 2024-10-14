@@ -46,7 +46,9 @@ export class Pipeline<T, K extends string | number = any> {
       throw new Error('The pipeline has no defined steps.');
     }
 
-    this.startSpinner(this.spinnerConfig?.loadingMessage || 'Running pipeline...');
+    this.startSpinner(
+      this.spinnerConfig?.loadingMessage || 'Running pipeline...',
+    );
 
     const context: PipelineContext<T> = {
       initialInput,
@@ -58,13 +60,22 @@ export class Pipeline<T, K extends string | number = any> {
     };
 
     try {
-      const result = await this.executeNode(this.initialNode, initialInput, context);
+      const result = await this.executeNode(
+        this.initialNode,
+        initialInput,
+        context,
+      );
 
-      this.successSpinner(this.spinnerConfig?.successMessage || 'Pipeline completed successfully.');
+      this.successSpinner(
+        this.spinnerConfig?.successMessage ||
+          'Pipeline completed successfully.',
+      );
 
       return result;
     } catch (error) {
-      this.failSpinner(this.spinnerConfig?.errorMessage || 'Error in the pipeline.');
+      this.failSpinner(
+        this.spinnerConfig?.errorMessage || 'Error in the pipeline.',
+      );
 
       throw error;
     }
