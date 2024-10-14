@@ -1,6 +1,6 @@
 {
   "name": "multillama",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "A TypeScript library for interacting with multiple language models via orchestrated pipelines.",
   "main": "dist/index.js",
@@ -11,8 +11,13 @@
     "format": "prettier --write 'src/**/*.ts'",
     "test": "jest"
   },
-  "author": "",
+  "author": "Andy Eulogio",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andygeek/multillama-ts.git"
+  },
+  "homepage": "https://github.com/andygeek/multillama-ts",
   "devDependencies": {
     "@eslint/js": "^9.12.0",
     "@types/jest": "^29.5.13",
