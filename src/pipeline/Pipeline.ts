@@ -20,7 +20,7 @@ export class Pipeline<T, K extends string | number = any> {
   }
 
   public addStep(
-    step: PipelineStep<T, K>,
+    step: PipelineStep<T>,
     condition?: ConditionFunction<T, K>,
   ): PipelineNode<T, K> {
     const node: PipelineNode<T, K> = { step, condition, branches: new Map() };
