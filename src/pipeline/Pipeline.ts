@@ -1,33 +1,9 @@
-// src/pipeline/Pipeline.ts
-
 import ora, { Ora } from 'ora';
 import { ConfigManager, SpinnerConfig } from '../config/ConfigManager.js';
-
-export interface PipelineContext<T> {
-  initialInput: T;
-  data: Record<string, any>;
-  pauseSpinner: () => void;
-  resumeSpinner: () => void;
-  successSpinner: (message: string) => void;
-  failSpinner: (message: string) => void;
-}
-
-export type PipelineStep<T, K extends string | number = any> = (
-  input: T,
-  context: PipelineContext<T>,
-) => Promise<T>;
-
-export type ConditionFunction<T, K extends string | number = any> = (
-  input: T,
-  context: PipelineContext<T>,
-) => Promise<K> | K;
-
-interface PipelineNode<T, K extends string | number = any> {
-  step: PipelineStep<T, K>;
-  condition?: ConditionFunction<T, K>;
-  branches?: Map<K, PipelineNode<T, K>>;
-  nextNode?: PipelineNode<T, K>; // Para pasos secuenciales sin condición
-}
+import { PipelineContext } from './PipelineContext.js';
+import { PipelineStep } from './PipelineStep.js';
+import { ConditionFunction } from './ConditionFunction.js';
+import { PipelineNode } from './PipelineNode.js';
 
 export class Pipeline<T, K extends string | number = any> {
   private initialNode?: PipelineNode<T, K>;
@@ -67,13 +43,11 @@ export class Pipeline<T, K extends string | number = any> {
 
   public async execute(initialInput: T): Promise<T> {
     if (!this.initialNode) {
-      throw new Error('El pipeline no tiene pasos definidos.');
+      throw new Error('The pipeline has no defined steps.');
     }
 
-    // Iniciar el spinner si está configurado
-    this.startSpinner(this.spinnerConfig?.loadingMessage || 'Ejecutando pipeline...');
+    this.startSpinner(this.spinnerConfig?.loadingMessage || 'Running pipeline...');
 
-    // Crear el contexto
     const context: PipelineContext<T> = {
       initialInput,
       data: {},
@@ -86,13 +60,11 @@ export class Pipeline<T, K extends string | number = any> {
     try {
       const result = await this.executeNode(this.initialNode, initialInput, context);
 
-      // Detener el spinner con mensaje de éxito
-      this.successSpinner(this.spinnerConfig?.successMessage || 'Pipeline completado con éxito.');
+      this.successSpinner(this.spinnerConfig?.successMessage || 'Pipeline completed successfully.');
 
       return result;
     } catch (error) {
-      // Detener el spinner con mensaje de error
-      this.failSpinner(this.spinnerConfig?.errorMessage || 'Error en el pipeline.');
+      this.failSpinner(this.spinnerConfig?.errorMessage || 'Error in the pipeline.');
 
       throw error;
     }
@@ -104,11 +76,10 @@ export class Pipeline<T, K extends string | number = any> {
     context: PipelineContext<T>,
   ): Promise<T> {
     if (this.enableLogging) {
-      console.log(`Ejecutando paso con entrada: ${input}`);
+      console.log(`Execute step with input: ${input}`);
     }
 
-    // Actualizar el spinner para el paso actual
-    this.updateSpinner(`Ejecutando paso...`);
+    this.updateSpinner(`Execute step...`);
 
     const result = await node.step(input, context);
 
@@ -119,14 +90,12 @@ export class Pipeline<T, K extends string | number = any> {
         return await this.executeNode(nextNode, result, context);
       } else {
         throw new Error(
-          `No se encontró una rama para el resultado de la condición: ${conditionResult}`,
+          `No branch was found for the condition result: ${conditionResult}`,
         );
       }
     } else if (node.nextNode) {
-      // Si hay un paso secuencial siguiente
       return await this.executeNode(node.nextNode, result, context);
     } else {
-      // Fin del pipeline
       return result;
     }
   }
