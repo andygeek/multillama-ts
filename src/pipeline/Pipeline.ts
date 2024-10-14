@@ -79,7 +79,7 @@ export class Pipeline<T, K extends string | number = any> {
       console.log(`Execute step with input: ${input}`);
     }
 
-    this.updateSpinner(`Execute step...`);
+    this.updateSpinner(this.spinnerConfig?.loadingMessage || 'Execute step...');
 
     const result = await node.step(input, context);
 
