@@ -1,222 +1,245 @@
 # MultiLlama
 
-MultiLlama is a TypeScript library that provides a flexible and modular way to interact with multiple language models through an orchestrated pipeline. It allows developers to define and execute sequential pipelines of model interactions using configurable adapters and services.
+**MultiLlama** is a versatile TypeScript library designed to orchestrate multiple language models seamlessly. It provides an abstraction layer over different AI models and services, allowing developers to integrate and utilize various models like OpenAI's GPT and Ollama models effortlessly.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Usage Examples](#usage-examples)
+  - [Basic Usage](#basic-usage)
+  - [Creating a Pipeline](#creating-a-pipeline)
+  - [Handling Commands and Questions](#handling-commands-and-questions)
+- [Configuration](#configuration)
+
+---
 
 ## Features
 
-- **Modular Design**: Easily extendable with custom adapters and services.
-- **Pipeline Execution**: Create sequential pipelines for complex processing flows.
-- **Configurable**: Initialize configurations from code or file.
-- **Adapter Pattern**: Support for different language models through adapters.
+- **Unified Interface**: Interact with multiple language models through a single, consistent API.
+- **Pipeline Processing**: Build complex processing pipelines with conditional branching and context management.
+- **Extensibility**: Easily add support for new models and services via adapters.
+- **Configurable**: Initialize and manage configurations from code or external files.
+- **Spinner Integration**: Built-in support for CLI spinners to enhance user experience during processing.
+
+---
 
 ## Installation
 
-Install MultiLlama via npm:
+To install MultiLlama, use npm:
 
 ```bash
 npm install multillama
 ```
 
-## Usage
+---
 
-### Initialization
+## Getting Started
 
-Before using MultiLlama, initialize it with your configuration:
+First, import the necessary classes and initialize the `MultiLlama` instance with your configuration.
 
 ```typescript
-import { MultiLlama } from 'multillama';
-import { OllamaAdapter } from 'multillama';
+import { MultiLlama, OpenAIAdapter, OllamaAdapter } from 'multillama';
 
+// Define service configurations
+const openaiService = {
+  adapter: new OpenAIAdapter(),
+  apiKey: 'your-openai-api-key',
+};
+
+const ollamaService = {
+  adapter: new OllamaAdapter(),
+};
+
+// Define model configurations
+const models = {
+  gpt4: {
+    service: openaiService,
+    name: 'gpt-4',
+    role: 'user',
+    response_format: 'text',
+  },
+  llama: {
+    service: ollamaService,
+    name: 'llama-2',
+    role: 'user',
+    response_format: 'text',
+  },
+};
+
+// Initialize MultiLlama
 MultiLlama.initialize({
   services: {
-    ollamaService: {
-      adapter: new OllamaAdapter(),
-      apiKey: 'xxx'
-    },
+    openai: openaiService,
+    ollama: ollamaService,
   },
-  models: {
-    ollama: {
-      service: {
-        adapter: new OllamaAdapter(),
-      },
-      name: 'ollama-model-name',
-      role: 'user',
-    },
-  },
+  models,
   spinnerConfig: {
-    loadingMessage: 'Processing request...',
-    successMessage: 'Process completed successfully!',
-    errorMessage: 'An error occurred during the process',
+    loadingMessage: 'Processing...',
+    successMessage: 'Done!',
+    errorMessage: 'An error occurred.',
   },
 });
-
-// Or initialize from a JSON configuration file
-MultiLlama.initializeFromFile('./config.json');
 ```
 
-### Using a Model
+---
 
-To use a specific model to generate a response:
+## Usage Examples
+
+### Basic Usage
+
+Use a specific model to generate a response to a prompt.
 
 ```typescript
-import { MultiLlama } from 'multillama';
+const multillama = new MultiLlama();
 
-const multiLlama = new MultiLlama();
-
-(async () => {
-  const response = await multiLlama.useModel('ollama', 'Hello, how are you?');
+async function generateResponse() {
+  const prompt = 'What is the capital of France?';
+  const response = await multillama.useModel('gpt4', prompt);
   console.log(response);
-})();
+}
+
+generateResponse();
 ```
 
-### Running a Pipeline
+**Output:**
 
-Create and run sequential pipelines for complex workflows:
+```
+Paris
+```
+
+### Creating a Pipeline
+
+Create a processing pipeline with conditional steps and branching.
 
 ```typescript
-import { MultiLlama, Pipeline } from 'multillama';
-import { BaseAdapter } from 'multillama';
-import { OllamaAdapter } from 'multillama';
+import { Pipeline } from 'multillama';
 
-// Define your pipeline steps
-const step1 = async (input: string, adapter: BaseAdapter<any>, initialMessage: string): Promise<string> => {
-  const response = await adapter.run(input);
-  return response.data;
-};
+async function processInput(userInput: string) {
+  const multillama = new MultiLlama();
+  const pipeline = new Pipeline<string>();
+  pipeline.setEnableLogging(true);
 
-const step2 = async (input: string, adapter: BaseAdapter<any>, initialMessage: string): Promise<string> => {
-  const modifiedInput = input.toUpperCase();
-  const response = await adapter.run(modifiedInput);
-  return response.data;
-};
+  // Initial Step: Analyze the input
+  const initialStep = pipeline.addStep(async (input, context) => {
+    // Determine the type of question
+    const analysisPrompt = `Analyze the following question and categorize it: "${input}"`;
+    return await multillama.useModel('gpt4', analysisPrompt);
+  });
 
-// Create a new pipeline
-const pipeline = new Pipeline<string, string>();
+  // Condition to branch based on analysis
+  initialStep.condition = (input) => {
+    if (input.includes('weather')) return 'weather_question';
+    else return 'general_question';
+  };
 
-// Add steps to the pipeline with their respective adapters
-pipeline
-  .addStep(step1, new OllamaAdapter())
-  .addStep(step2, new OllamaAdapter());
+  // Branch for weather-related questions
+  const weatherStep = pipeline.addStep(async (input, context) => {
+    const weatherPrompt = `Provide a weather report for "${context.initialInput}"`;
+    return await multillama.useModel('gpt4', weatherPrompt);
+  });
 
-// Execute the pipeline
-const multiLlama = new MultiLlama();
+  // Branch for general questions
+  const generalStep = pipeline.addStep(async (input, context) => {
+    return await multillama.useModel('llama', context.initialInput);
+  });
 
-(async () => {
-  const result = await multiLlama.runSequentialPipeline(pipeline, 'Hello, world!');
+  // Set up branching
+  pipeline.addBranch(initialStep, 'weather_question', weatherStep);
+  pipeline.addBranch(initialStep, 'general_question', generalStep);
+
+  // Execute the pipeline
+  const result = await pipeline.execute(userInput);
   console.log(result);
-})();
+}
+
+processInput('What is the weather like in New York?');
 ```
+
+**Output:**
+
+```
+The current weather in New York is sunny with a temperature of 25°C.
+```
+
+### Handling Commands and Questions
+
+Implement a command handler that processes different types of user inputs.
+
+```typescript
+import {
+  handleCommandOrQuestion,
+} from './src/questionHandler.js';
+
+// User input from command-line arguments or other sources
+const userInput = 'Create a new feature branch named "feature/login"';
+
+// Process the input using predefined models
+handleCommandOrQuestion('gpt4', 'llama', userInput);
+```
+
+---
 
 ## Configuration
 
-MultiLlama uses a configuration object or file to manage services, models, and spinner messages.
+MultiLlama uses a flexible configuration system that can be initialized programmatically or from a file.
 
-### Configuration Object Structure
+### Programmatic Initialization
 
 ```typescript
-interface Config {
-  services: Record<string, ServiceConfig>;
-  models: Record<string, ModelConfig>;
-  spinnerConfig?: SpinnerConfig;
-}
-
-interface ServiceConfig {
-  apiKey?: string;
-  adapter: BaseAdapter;
-}
-
-interface ModelConfig {
-  service: ServiceConfig;
-  name: string;
-  defaultRole: { role: string; content: string };
-  stream?: boolean;
-}
-
-interface SpinnerConfig {
-  loadingMessage: string;
-  successMessage: string;
-  errorMessage: string;
-}
+MultiLlama.initialize({
+  services: {
+    openai: {
+      adapter: new OpenAIAdapter(),
+      apiKey: 'your-api-key',
+    },
+  },
+  models: {
+    gpt4: {
+      service: 'openai',
+      name: 'gpt-4',
+      role: 'user',
+      response_format: 'text',
+    },
+  },
+});
 ```
 
-### Example Configuration File (`config.json`)
+### File-Based Initialization
+
+Save your configuration in a JSON file and initialize from it.
+
+```typescript
+MultiLlama.initializeFromFile('path/to/config.json');
+```
+
+**config.json:**
 
 ```json
 {
   "services": {
-    "ollamaService": {
-      "adapter": "OllamaAdapter"
+    "openai": {
+      "adapter": "OpenAIAdapter",
+      "apiKey": "your-api-key"
     }
   },
   "models": {
-    "ollama": {
-      "service": {
-        "adapter": "OllamaAdapter"
-      },
-      "name": "ollama-model-name",
-      "role": "user"
+    "gpt4": {
+      "service": "openai",
+      "name": "gpt-4",
+      "role": "user",
+      "response_format": "text"
     }
   },
   "spinnerConfig": {
-    "loadingMessage": "Processing request...",
-    "successMessage": "Process completed successfully!",
-    "errorMessage": "An error occurred during the process"
+    "loadingMessage": "Processing...",
+    "successMessage": "Done!",
+    "errorMessage": "An error occurred."
   }
 }
 ```
 
-**Note**: When using a configuration file, ensure that any custom classes like `OllamaAdapter` are properly imported and instantiated in your code.
+---
 
-## Adapters
-
-Adapters are used to interface with different language models or services.
-
-### Creating a Custom Adapter
-
-Implement the `BaseAdapter` interface to create a custom adapter:
-
-```typescript
-import { BaseAdapter, AdapterResponse, RunOptions } from 'multillama';
-
-export class CustomAdapter implements BaseAdapter<string> {
-  async run(prompt: string, options?: RunOptions): Promise<AdapterResponse<string>> {
-    // Implement interaction with your language model here
-    return {
-      data: 'Response from custom adapter',
-      metadata: {
-        timestamp: new Date().toISOString(),
-      },
-    };
-  }
-}
-```
-
-## Error Handling
-
-MultiLlama uses exceptions to handle errors. Use `try-catch` blocks when calling asynchronous methods:
-
-```typescript
-try {
-  const response = await multiLlama.useModel('ollama', 'Hello!');
-} catch (error) {
-  console.error('An error occurred:', error);
-}
-```
-
-## Logging
-
-Enable logging in pipelines to debug and monitor step results:
-
-```typescript
-pipeline.enableLogging();
-```
-
-## Dependencies
-
-- **TypeScript**: Strongly typed language for writing scalable applications.
-- **ora**: For displaying spinners and progress in the console.
-- **fs** and **path**: For file system operations in configuration management.
-
-## Support
-
-For questions or issues, please open an issue on the project's GitHub repository.
+*Happy Coding!* 🦙🎉
