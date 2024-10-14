@@ -1,6 +1,6 @@
 {
   "name": "multillama",
-  "version": "0.1.6",
+  "version": "1.0.0",
   "type": "module",
   "description": "A TypeScript library for interacting with multiple language models via orchestrated pipelines.",
   "main": "dist/index.js",
