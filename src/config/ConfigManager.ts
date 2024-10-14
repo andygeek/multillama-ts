@@ -14,6 +14,7 @@ export interface ModelConfig {
   role: string;
   response_format: 'text' | 'json';
   stream?: boolean;
+  max_tokens?: number
 }
 
 export interface SpinnerConfig {

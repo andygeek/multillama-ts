@@ -23,7 +23,7 @@ export class OpenAIAdapter implements BaseAdapter<string> {
         model: modelConfig.name,
         messages: [{ role: 'user', content: prompt }],
         temperature: 1,
-        max_tokens: 400,
+        max_tokens: modelConfig.max_tokens || 300,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,

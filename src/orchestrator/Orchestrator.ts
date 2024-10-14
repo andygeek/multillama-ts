@@ -34,7 +34,7 @@ export class Orchestrator {
 
     try {
       if (enableLogging) {
-        pipeline.enableLogging();
+        pipeline.setEnableLogging(enableLogging);
       }
 
       const result = await pipeline.execute(initialInput);
