@@ -11,7 +11,6 @@
   - [Basic Usage](#basic-usage)
   - [Creating a Pipeline](#creating-a-pipeline)
   - [Handling Commands and Questions](#handling-commands-and-questions)
-- [Configuration](#configuration)
 
 ---
 
@@ -177,67 +176,6 @@ const userInput = 'Create a new feature branch named "feature/login"';
 
 // Process the input using predefined models
 handleCommandOrQuestion('gpt4', 'llama', userInput);
-```
-
----
-
-## Configuration
-
-MultiLlama uses a flexible configuration system that can be initialized programmatically or from a file.
-
-### Programmatic Initialization
-
-```typescript
-MultiLlama.initialize({
-  services: {
-    openai: {
-      adapter: new OpenAIAdapter(),
-      apiKey: 'your-api-key',
-    },
-  },
-  models: {
-    gpt4: {
-      service: 'openai',
-      name: 'gpt-4',
-      role: 'user',
-      response_format: 'text',
-    },
-  },
-});
-```
-
-### File-Based Initialization
-
-Save your configuration in a JSON file and initialize from it.
-
-```typescript
-MultiLlama.initializeFromFile('path/to/config.json');
-```
-
-**config.json:**
-
-```json
-{
-  "services": {
-    "openai": {
-      "adapter": "OpenAIAdapter",
-      "apiKey": "your-api-key"
-    }
-  },
-  "models": {
-    "gpt4": {
-      "service": "openai",
-      "name": "gpt-4",
-      "role": "user",
-      "response_format": "text"
-    }
-  },
-  "spinnerConfig": {
-    "loadingMessage": "Processing...",
-    "successMessage": "Done!",
-    "errorMessage": "An error occurred."
-  }
-}
 ```
 
 ---
