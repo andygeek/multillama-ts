@@ -3,18 +3,25 @@ import { BaseAdapter } from '../adapters/BaseAdapter.js';
 import fs from 'fs';
 import path from 'path';
 
+type Format = 'text' | 'json';
+
 export interface ServiceConfig {
   apiKey?: string;
   adapter: BaseAdapter;
 }
 
+interface Options {
+  temperature: number;
+  presence_penalty: number;
+  frequency_penalty: number;
+}
+
 export interface ModelConfig {
   service: ServiceConfig;
   name: string;
-  role: string;
-  response_format: 'text' | 'json';
-  stream?: boolean;
+  response_format: Format;
   max_tokens?: number;
+  options?: Partial<Options>;
 }
 
 export interface SpinnerConfig {
