@@ -1,4 +1,4 @@
-import { BaseAdapter } from '../adapters/BaseAdapter.js';
+import { BaseAdapter, ChatCompletionMessage } from '../adapters/BaseAdapter.js';
 import ConfigManager from '../config/ConfigManager.js';
 
 export class Orchestrator {
@@ -15,9 +15,12 @@ export class Orchestrator {
     return serviceConfig.adapter;
   }
 
-  public async useModel(modelName: string, prompt: string): Promise<string> {
+  public async useModel(
+    modelName: string,
+    messages: Array<ChatCompletionMessage>,
+  ): Promise<string> {
     const adapter = this.getAdapter(modelName);
-    const response = await adapter.run(prompt, modelName);
+    const response = await adapter.run(messages, modelName);
 
     return response.data;
   }
