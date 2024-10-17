@@ -2,7 +2,6 @@ import ora, { Ora } from 'ora';
 import { ConfigManager, SpinnerConfig } from '../config/ConfigManager.js';
 import { PipelineContext } from './PipelineContext.js';
 import { PipelineStep } from './PipelineStep.js';
-import { ConditionFunction } from './ConditionFunction.js';
 import { PipelineNode } from './PipelineNode.js';
 
 export class Pipeline<T, K extends string | number = any> {
@@ -19,11 +18,8 @@ export class Pipeline<T, K extends string | number = any> {
     this.enableLogging = enable;
   }
 
-  public addStep(
-    step: PipelineStep<T>,
-    condition?: ConditionFunction<T, K>,
-  ): PipelineNode<T, K> {
-    const node: PipelineNode<T, K> = { step, condition, branches: new Map() };
+  public addStep(step: PipelineStep<T>): PipelineNode<T, K> {
+    const node: PipelineNode<T, K> = { step, branches: new Map() };
     if (!this.initialNode) {
       this.initialNode = node;
     }
@@ -32,7 +28,7 @@ export class Pipeline<T, K extends string | number = any> {
 
   public addBranch(
     node: PipelineNode<T, K>,
-    conditionValue: K,
+    conditionValue: T,
     nextNode: PipelineNode<T, K>,
   ): void {
     if (!node.branches) {
@@ -89,13 +85,12 @@ export class Pipeline<T, K extends string | number = any> {
     if (this.enableLogging) {
       console.log(`Execute step with input: ${input}`);
     }
-
     this.updateSpinner(this.spinnerConfig?.loadingMessage || 'Execute step...');
 
     const result = await node.step(input, context);
 
-    if (node.condition && node.branches) {
-      const conditionResult = await node.condition(result, context);
+    if (node.branches && node.branches.size > 0) {
+      const conditionResult = await node.step(input, context);
       const nextNode = node.branches.get(conditionResult);
       if (nextNode) {
         return await this.executeNode(nextNode, result, context);
