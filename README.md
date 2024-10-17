@@ -109,7 +109,7 @@ const multillama = new MultiLlama();
 
 async function generateResponse() {
   const prompt = 'What is the capital of France?';
-  const response = await multillama.useModel('gpt4', prompt);
+  const response = await multillama.useModel('gpt4', [{role: 'user', content: prompt}]);
   console.log(response);
 }
 
