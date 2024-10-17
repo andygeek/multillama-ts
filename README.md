@@ -27,7 +27,6 @@ MultiLlama currently supports the following services:
 - [Usage Examples](#usage-examples)
   - [Basic Usage](#basic-usage)
   - [Creating a Pipeline](#creating-a-pipeline)
-  - [Handling Commands and Questions](#handling-commands-and-questions)
 
 ---
 
@@ -73,13 +72,11 @@ const models = {
   gpt4: {
     service: openaiService,
     name: 'gpt-4',
-    role: 'user',
-    response_format: 'text',
+    response_format: 'json',
   },
   llama: {
     service: ollamaService,
     name: 'llama-2',
-    role: 'user',
     response_format: 'text',
   },
 };
@@ -141,7 +138,7 @@ async function processInput(userInput: string) {
   const initialStep = pipeline.addStep(async (input, context) => {
     // Determine the type of question
     const analysisPrompt = `Analyze the following question and categorize it: "${input}"`;
-    const response = await multillama.useModel('gpt4', analysisPrompt);
+    const response = await multillama.useModel('gpt4', [{role: 'user', content: analysisPrompt}]);
     if (response.includes('weather')) {
       return 'weather_question';
     } else {
@@ -152,12 +149,12 @@ async function processInput(userInput: string) {
   // Branch for weather-related questions
   const weatherStep = pipeline.addStep(async (input, context) => {
     const weatherPrompt = `Provide a weather report for "${context.initialInput}"`;
-    return await multillama.useModel('gpt4', weatherPrompt);
+    return await multillama.useModel('gpt4', [{role: 'user', content: weatherPrompt}]);
   });
 
   // Branch for general questions
   const generalStep = pipeline.addStep(async (input, context) => {
-    return await multillama.useModel('llama', context.initialInput);
+    return await multillama.useModel('llama', [{role: 'user', content: context.initialInput}]);
   });
 
   // Set up branching
@@ -176,22 +173,6 @@ processInput('What is the weather like in New York?');
 
 ```
 The current weather in New York is sunny with a temperature of 25°C.
-```
-
-### Handling Commands and Questions
-
-Implement a command handler that processes different types of user inputs.
-
-```typescript
-import {
-  handleCommandOrQuestion,
-} from './src/questionHandler.js';
-
-// User input from command-line arguments or other sources
-const userInput = 'Create a new feature branch named "feature/login"';
-
-// Process the input using predefined models
-handleCommandOrQuestion('gpt4', 'llama', userInput);
 ```
 
 ---
