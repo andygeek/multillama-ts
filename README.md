@@ -141,14 +141,13 @@ async function processInput(userInput: string) {
   const initialStep = pipeline.addStep(async (input, context) => {
     // Determine the type of question
     const analysisPrompt = `Analyze the following question and categorize it: "${input}"`;
-    return await multillama.useModel('gpt4', analysisPrompt);
+    const response = await multillama.useModel('gpt4', analysisPrompt);
+    if (response.includes('weather')) {
+      return 'weather_question';
+    } else {
+      return 'general_question';
+    }
   });
-
-  // Condition to branch based on analysis
-  initialStep.condition = (input) => {
-    if (input.includes('weather')) return 'weather_question';
-    else return 'general_question';
-  };
 
   // Branch for weather-related questions
   const weatherStep = pipeline.addStep(async (input, context) => {
