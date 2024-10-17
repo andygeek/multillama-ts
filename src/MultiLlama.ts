@@ -1,5 +1,6 @@
 import { Orchestrator } from './orchestrator/Orchestrator.js';
 import ConfigManager, { Config } from './config/ConfigManager.js';
+import { ChatCompletionMessage } from './adapters/BaseAdapter.js';
 
 export class MultiLlama {
   private orchestrator: Orchestrator;
@@ -20,7 +21,10 @@ export class MultiLlama {
     ConfigManager.saveConfigToFile(filePath);
   }
 
-  public async useModel(modelName: string, prompt: string): Promise<string> {
-    return await this.orchestrator.useModel(modelName, prompt);
+  public async useModel(
+    modelName: string,
+    messages: Array<ChatCompletionMessage>,
+  ): Promise<string> {
+    return await this.orchestrator.useModel(modelName, messages);
   }
 }
