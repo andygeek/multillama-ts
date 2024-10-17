@@ -1,14 +1,22 @@
 import OpenAI from 'openai';
-import { BaseAdapter, AdapterResponse } from './BaseAdapter.js';
-import { ConfigManager } from '../config/ConfigManager.js';
+import {
+  BaseAdapter,
+  AdapterResponse,
+  ChatCompletionMessage,
+} from './BaseAdapter.js';
+import {
+  ConfigManager,
+  ModelConfig,
+  ServiceConfig,
+} from '../config/ConfigManager.js';
 
 export class OpenAIAdapter implements BaseAdapter<string> {
   async run(
-    prompt: string,
+    messages: Array<ChatCompletionMessage>,
     modelName: string,
   ): Promise<AdapterResponse<string>> {
-    const modelConfig = ConfigManager.getModelConfig(modelName);
-    const serviceConfig = modelConfig.service;
+    const modelConfig: ModelConfig = ConfigManager.getModelConfig(modelName);
+    const serviceConfig: ServiceConfig = modelConfig.service;
 
     if (!serviceConfig.apiKey) {
       throw new Error(
@@ -21,13 +29,11 @@ export class OpenAIAdapter implements BaseAdapter<string> {
     try {
       const response = await openai.chat.completions.create({
         model: modelConfig.name,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 1,
-        max_tokens: modelConfig.max_tokens || 300,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
-        stream: false,
+        messages: messages,
+        temperature: modelConfig.options?.temperature ?? 1,
+        max_tokens: modelConfig.max_tokens ?? 300,
+        frequency_penalty: modelConfig.options?.frequency_penalty ?? 0,
+        presence_penalty: modelConfig.options?.presence_penalty ?? 0,
         response_format:
           modelConfig.response_format == 'json'
             ? { type: 'json_object' }
@@ -38,7 +44,6 @@ export class OpenAIAdapter implements BaseAdapter<string> {
         data: response.choices?.[0]?.message?.content?.trim() || '',
         metadata: {
           modelUsed: modelConfig.name,
-          promptLength: prompt.length,
           timestamp: new Date().toISOString(),
         },
       };
