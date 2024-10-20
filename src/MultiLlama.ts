@@ -1,6 +1,10 @@
 import { Orchestrator } from './orchestrator/Orchestrator.js';
 import ConfigManager, { Config } from './config/ConfigManager.js';
-import { ChatCompletionMessage } from './adapters/BaseAdapter.js';
+import {
+  OpenAIChatCompletionMessage,
+  AnthropicChatCompletionMessage,
+  OllamaChatCompletionMessage,
+} from './adapters/BaseAdapter.js';
 
 export class MultiLlama {
   private orchestrator: Orchestrator;
@@ -23,7 +27,11 @@ export class MultiLlama {
 
   public async useModel(
     modelName: string,
-    messages: Array<ChatCompletionMessage>,
+    messages: Array<
+      | OpenAIChatCompletionMessage
+      | AnthropicChatCompletionMessage
+      | OllamaChatCompletionMessage
+    >,
   ): Promise<string> {
     return await this.orchestrator.useModel(modelName, messages);
   }
