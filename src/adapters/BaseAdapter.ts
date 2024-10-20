@@ -1,4 +1,6 @@
-type Role = 'user' | 'assistant' | 'system';
+type RoleOpenAI = 'user' | 'assistant' | 'system';
+type RoleAnthropic = 'user' | 'assistant';
+type RoleOllama = 'user' | 'assistant' | 'system';
 
 export interface AdapterResponse<T = string> {
   data: T;
@@ -7,12 +9,26 @@ export interface AdapterResponse<T = string> {
 
 export interface BaseAdapter<T = string> {
   run(
-    messages: Array<ChatCompletionMessage>,
+    messages: Array<
+      | OpenAIChatCompletionMessage
+      | AnthropicChatCompletionMessage
+      | OllamaChatCompletionMessage
+    >,
     modelName: string,
   ): Promise<AdapterResponse<T>>;
 }
 
-export interface ChatCompletionMessage {
+export interface OpenAIChatCompletionMessage {
   content: string;
-  role: Role;
+  role: RoleOpenAI;
+}
+
+export interface AnthropicChatCompletionMessage {
+  content: string;
+  role: RoleAnthropic;
+}
+
+export interface OllamaChatCompletionMessage {
+  content: string;
+  role: RoleOllama;
 }
