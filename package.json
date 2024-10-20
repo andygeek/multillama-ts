@@ -36,6 +36,7 @@
     "typescript": "5.5"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.29.2",
     "ollama": "^0.5.9",
     "openai": "^4.67.3",
     "ora": "^8.1.0"
