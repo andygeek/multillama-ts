@@ -14,8 +14,8 @@ MultiLlama currently supports the following services:
 
 - ✅ **OpenAI**
 - ✅ **Ollama**
+- ✅ **Anthropic**
 - ⏳ **Gemini** *(coming soon)*
-- ⏳ **Claude** *(coming soon)*
 
 ---
 
