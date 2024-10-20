@@ -1,4 +1,9 @@
-import { BaseAdapter, ChatCompletionMessage } from '../adapters/BaseAdapter.js';
+import {
+  BaseAdapter,
+  OpenAIChatCompletionMessage,
+  AnthropicChatCompletionMessage,
+  OllamaChatCompletionMessage,
+} from '../adapters/BaseAdapter.js';
 import ConfigManager from '../config/ConfigManager.js';
 
 export class Orchestrator {
@@ -17,7 +22,11 @@ export class Orchestrator {
 
   public async useModel(
     modelName: string,
-    messages: Array<ChatCompletionMessage>,
+    messages: Array<
+      | OpenAIChatCompletionMessage
+      | AnthropicChatCompletionMessage
+      | OllamaChatCompletionMessage
+    >,
   ): Promise<string> {
     const adapter = this.getAdapter(modelName);
     const response = await adapter.run(messages, modelName);
