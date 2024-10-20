@@ -1,6 +1,6 @@
-type RoleOpenAI = 'user' | 'assistant' | 'system';
-type RoleAnthropic = 'user' | 'assistant';
-type RoleOllama = 'user' | 'assistant' | 'system';
+export type RoleOpenAI = 'user' | 'assistant' | 'system';
+export type RoleAnthropic = 'user' | 'assistant';
+export type RoleOllama = 'user' | 'assistant' | 'system';
 
 export interface AdapterResponse<T = string> {
   data: T;

@@ -7,3 +7,20 @@ export { Pipeline } from './pipeline/Pipeline.js';
 export { PipelineContext } from './pipeline/PipelineContext.js';
 export { PipelineStep } from './pipeline/PipelineStep.js';
 export { PipelineNode } from './pipeline/PipelineNode.js';
+export {
+  Config,
+  ServiceConfig,
+  ModelConfig,
+  SpinnerConfig,
+  ConfigManager,
+} from './config/ConfigManager.js';
+export {
+  BaseAdapter,
+  AdapterResponse,
+  OpenAIChatCompletionMessage,
+  AnthropicChatCompletionMessage,
+  OllamaChatCompletionMessage,
+  RoleOpenAI,
+  RoleAnthropic,
+  RoleOllama,
+} from './adapters/BaseAdapter.js';
