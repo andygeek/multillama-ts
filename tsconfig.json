@@ -6,6 +6,7 @@
     "lib": ["ES6", "DOM"],
     "outDir": "./dist",
     "rootDir": "./src",
+    "declaration": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
