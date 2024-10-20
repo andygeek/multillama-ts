@@ -2,13 +2,13 @@ import ollama from 'ollama';
 import {
   BaseAdapter,
   AdapterResponse,
-  ChatCompletionMessage,
+  OllamaChatCompletionMessage,
 } from './BaseAdapter.js';
 import { ConfigManager } from '../config/ConfigManager.js';
 
 export class OllamaAdapter implements BaseAdapter<string> {
   async run(
-    messages: Array<ChatCompletionMessage>,
+    messages: Array<OllamaChatCompletionMessage>,
     modelName: string,
   ): Promise<AdapterResponse<string>> {
     const modelConfig = ConfigManager.getModelConfig(modelName);
