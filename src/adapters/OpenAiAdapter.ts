@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import {
   BaseAdapter,
   AdapterResponse,
-  ChatCompletionMessage,
+  OpenAIChatCompletionMessage,
 } from './BaseAdapter.js';
 import {
   ConfigManager,
@@ -12,7 +12,7 @@ import {
 
 export class OpenAIAdapter implements BaseAdapter<string> {
   async run(
-    messages: Array<ChatCompletionMessage>,
+    messages: Array<OpenAIChatCompletionMessage>,
     modelName: string,
   ): Promise<AdapterResponse<string>> {
     const modelConfig: ModelConfig = ConfigManager.getModelConfig(modelName);
