@@ -10,7 +10,7 @@ import {
   ServiceConfig,
 } from '../config/ConfigManager.js';
 
-export class OpenAIAdapter implements BaseAdapter<string> {
+export class OpenAiAdapter implements BaseAdapter<string> {
   async run(
     messages: Array<OpenAIChatCompletionMessage>,
     modelName: string,

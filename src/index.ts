@@ -1,7 +1,7 @@
 export { MultiLlama } from './MultiLlama.js';
 export { Orchestrator } from './orchestrator/Orchestrator.js';
 export { OllamaAdapter } from './adapters/OllamaAdapter.js';
-export { OpenAIAdapter } from './adapters/OpenAIAdapter.js';
+export { OpenAiAdapter } from './adapters/OpenAiAdapter.js';
 export { AnthropicAdapter } from './adapters/AnthropicAdapter.js';
 export { Pipeline } from './pipeline/Pipeline.js';
 export { PipelineContext } from './pipeline/PipelineContext.js';
