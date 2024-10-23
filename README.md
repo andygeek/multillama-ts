@@ -15,7 +15,7 @@ MultiLlama currently supports the following services:
 - ✅ **OpenAI**
 - ✅ **Ollama**
 - ✅ **Anthropic**
-- ⏳ **Gemini** *(coming soon)*
+- ✅ **Gemini**
 
 ---
 
@@ -55,7 +55,7 @@ npm install multillama
 First, import the necessary classes and initialize the `MultiLlama` instance with your configuration.
 
 ```typescript
-import { MultiLlama, OpenAIAdapter, OllamaAdapter } from 'multillama';
+import { MultiLlama, OpenAIAdapter, OllamaAdapter, GeminiAdapter } from 'multillama';
 
 // Define service configurations
 const openaiService = {
@@ -65,6 +65,11 @@ const openaiService = {
 
 const ollamaService = {
   adapter: new OllamaAdapter(),
+};
+
+const geminiService = {
+  adapter: new GeminiAdapter(),
+  apiKey: 'your-gemini-api-key',
 };
 
 // Define model configurations
@@ -79,6 +84,11 @@ const models = {
     name: 'llama-2',
     response_format: 'text',
   },
+  gemini: {
+    service: geminiService,
+    name: 'gemini-1',
+    response_format: 'text',
+  },
 };
 
 // Initialize MultiLlama
@@ -86,6 +96,7 @@ MultiLlama.initialize({
   services: {
     openai: openaiService,
     ollama: ollamaService,
+    gemini: geminiService,
   },
   models,
   spinnerConfig: {
