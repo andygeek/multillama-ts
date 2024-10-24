@@ -24,3 +24,4 @@ export {
   RoleAnthropic,
   RoleOllama,
 } from './adapters/BaseAdapter.js';
+export { GeminiAdapter } from './adapters/GeminiAdapter.js';
