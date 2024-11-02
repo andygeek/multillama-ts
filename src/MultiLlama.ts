@@ -4,6 +4,7 @@ import {
   OpenAIChatCompletionMessage,
   AnthropicChatCompletionMessage,
   OllamaChatCompletionMessage,
+  GeminiChatCompletionMessage,
 } from './adapters/BaseAdapter.js';
 
 export class MultiLlama {
@@ -31,6 +32,7 @@ export class MultiLlama {
       | OpenAIChatCompletionMessage
       | AnthropicChatCompletionMessage
       | OllamaChatCompletionMessage
+      | GeminiChatCompletionMessage
     >,
   ): Promise<string> {
     return await this.orchestrator.useModel(modelName, messages);
