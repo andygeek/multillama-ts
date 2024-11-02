@@ -1,3 +1,5 @@
+import { Content } from '@google/generative-ai';
+
 export type RoleOpenAI = 'user' | 'assistant' | 'system';
 export type RoleAnthropic = 'user' | 'assistant';
 export type RoleOllama = 'user' | 'assistant' | 'system';
@@ -13,6 +15,7 @@ export interface BaseAdapter<T = string> {
       | OpenAIChatCompletionMessage
       | AnthropicChatCompletionMessage
       | OllamaChatCompletionMessage
+      | GeminiChatCompletionMessage
     >,
     modelName: string,
   ): Promise<AdapterResponse<T>>;
@@ -32,3 +35,5 @@ export interface OllamaChatCompletionMessage {
   content: string;
   role: RoleOllama;
 }
+
+export type GeminiChatCompletionMessage = Content;
