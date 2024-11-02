@@ -3,6 +3,7 @@ import {
   OpenAIChatCompletionMessage,
   AnthropicChatCompletionMessage,
   OllamaChatCompletionMessage,
+  GeminiChatCompletionMessage,
 } from '../adapters/BaseAdapter.js';
 import ConfigManager from '../config/ConfigManager.js';
 
@@ -26,6 +27,7 @@ export class Orchestrator {
       | OpenAIChatCompletionMessage
       | AnthropicChatCompletionMessage
       | OllamaChatCompletionMessage
+      | GeminiChatCompletionMessage
     >,
   ): Promise<string> {
     const adapter = this.getAdapter(modelName);
