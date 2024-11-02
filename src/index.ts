@@ -3,6 +3,7 @@ export { Orchestrator } from './orchestrator/Orchestrator.js';
 export { OllamaAdapter } from './adapters/OllamaAdapter.js';
 export { OpenAiAdapter } from './adapters/OpenAiAdapter.js';
 export { AnthropicAdapter } from './adapters/AnthropicAdapter.js';
+export { GeminiAdapter } from './adapters/GeminiAdapter.js';
 export { Pipeline } from './pipeline/Pipeline.js';
 export { PipelineContext } from './pipeline/PipelineContext.js';
 export { PipelineStep } from './pipeline/PipelineStep.js';
@@ -24,4 +25,3 @@ export {
   RoleAnthropic,
   RoleOllama,
 } from './adapters/BaseAdapter.js';
-export { GeminiAdapter } from './adapters/GeminiAdapter.js';
