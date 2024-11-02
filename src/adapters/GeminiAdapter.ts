@@ -1,8 +1,9 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+
 import {
   BaseAdapter,
   AdapterResponse,
-  OpenAIChatCompletionMessage,
+  GeminiChatCompletionMessage,
 } from './BaseAdapter.js';
 import {
   ConfigManager,
@@ -12,7 +13,7 @@ import {
 
 export class GeminiAdapter implements BaseAdapter<string> {
   async run(
-    messages: Array<OpenAIChatCompletionMessage>,
+    messages: Array<GeminiChatCompletionMessage>,
     modelName: string,
   ): Promise<AdapterResponse<string>> {
     const modelConfig: ModelConfig = ConfigManager.getModelConfig(modelName);
@@ -28,10 +29,12 @@ export class GeminiAdapter implements BaseAdapter<string> {
 
     try {
       const model = genAi.getGenerativeModel({ model: modelName });
-      const prompt = "Does this look store-bought or homemade?";
-
-      
-      const result = await model.generateContent([prompt]);
+      const result = await model.generateContent({
+        contents: messages,
+        generationConfig: {
+          maxOutputTokens: modelConfig.max_tokens ?? 300,
+        },
+      });
 
       return {
         data: result.response.text() || '',
