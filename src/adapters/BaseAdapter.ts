@@ -1,8 +1,9 @@
-import { Content } from '@google/generative-ai';
+import { Content } from '@google/genai';
 
 export type RoleOpenAI = 'user' | 'assistant' | 'system';
 export type RoleAnthropic = 'user' | 'assistant';
 export type RoleOllama = 'user' | 'assistant' | 'system';
+export type RoleGemini = 'user' | 'model';
 
 export interface AdapterResponse<T = string> {
   data: T;
@@ -36,4 +37,6 @@ export interface OllamaChatCompletionMessage {
   role: RoleOllama;
 }
 
-export type GeminiChatCompletionMessage = Content;
+export interface GeminiChatCompletionMessage extends Content {
+  role?: RoleGemini;
+}

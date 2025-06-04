@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 import {
   BaseAdapter,
@@ -25,19 +25,19 @@ export class GeminiAdapter implements BaseAdapter<string> {
       );
     }
 
-    const genAi = new GoogleGenerativeAI(serviceConfig.apiKey);
+    const genAi = new GoogleGenAI({ apiKey: serviceConfig.apiKey });
 
     try {
-      const model = genAi.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent({
+      const result = await genAi.models.generateContent({
+        model: modelName,
         contents: messages,
-        generationConfig: {
+        config: {
           maxOutputTokens: modelConfig.max_tokens ?? 300,
         },
       });
 
       return {
-        data: result.response.text() || '',
+        data: result.text || '',
         metadata: {
           modelUsed: modelConfig.name,
           timestamp: new Date().toISOString(),
