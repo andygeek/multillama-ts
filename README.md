@@ -72,6 +72,9 @@ const geminiService = {
   apiKey: 'your-gemini-api-key',
 };
 
+// Gemini messages use roles 'user' and 'model' as defined by the
+// `@google/genai` library.
+
 // Define model configurations
 const models = {
   gpt4: {
