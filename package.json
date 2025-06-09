@@ -59,5 +59,8 @@
     "OpenAI",
     "LLM",
     "Natural Language Processing"
-  ]
+  ],
+  "bin": {
+    "multillama": "dist/cli.js"
+  }
 }

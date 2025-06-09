@@ -189,6 +189,16 @@ processInput('What is the weather like in New York?');
 The current weather in New York is sunny with a temperature of 25°C.
 ```
 
+### Web Preview
+
+You can inspect your MultiLlama configuration in the browser by running:
+
+```bash
+npx multillama web
+```
+
+This starts a local server at [http://localhost:3300](http://localhost:3300) that renders the loaded configuration.
+
 ---
 
 *Happy Coding!* 🦙🎉
