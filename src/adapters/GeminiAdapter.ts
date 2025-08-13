@@ -29,7 +29,7 @@ export class GeminiAdapter implements BaseAdapter<string> {
 
     try {
       const result = await genAi.models.generateContent({
-        model: modelName,
+        model: modelConfig.name,
         contents: messages,
         config: {
           maxOutputTokens: modelConfig.max_tokens ?? 300,

@@ -1,7 +1,7 @@
 import { PipelineStep } from './PipelineStep.js';
 
-export interface PipelineNode<T, K extends string | number = any> {
+export interface PipelineNode<T> {
   step: PipelineStep<T>;
-  branches?: Map<T, PipelineNode<T, K>>;
-  nextNode?: PipelineNode<T, K>;
+  branches?: Map<T, PipelineNode<T>>;
+  nextNode?: PipelineNode<T>;
 }
