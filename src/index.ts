@@ -21,7 +21,9 @@ export {
   OpenAIChatCompletionMessage,
   AnthropicChatCompletionMessage,
   OllamaChatCompletionMessage,
+  GeminiChatCompletionMessage,
   RoleOpenAI,
   RoleAnthropic,
   RoleOllama,
+  RoleGemini,
 } from './adapters/BaseAdapter.js';

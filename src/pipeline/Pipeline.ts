@@ -4,8 +4,8 @@ import { PipelineContext } from './PipelineContext.js';
 import { PipelineStep } from './PipelineStep.js';
 import { PipelineNode } from './PipelineNode.js';
 
-export class Pipeline<T, K extends string | number = any> {
-  private initialNode?: PipelineNode<T, K>;
+export class Pipeline<T> {
+  private initialNode?: PipelineNode<T>;
   private enableLogging: boolean = false;
   private spinnerConfig?: SpinnerConfig;
   private spinner?: Ora;
@@ -18,8 +18,8 @@ export class Pipeline<T, K extends string | number = any> {
     this.enableLogging = enable;
   }
 
-  public addStep(step: PipelineStep<T>): PipelineNode<T, K> {
-    const node: PipelineNode<T, K> = { step, branches: new Map() };
+  public addStep(step: PipelineStep<T>): PipelineNode<T> {
+    const node: PipelineNode<T> = { step, branches: new Map() };
     if (!this.initialNode) {
       this.initialNode = node;
     }
@@ -27,9 +27,9 @@ export class Pipeline<T, K extends string | number = any> {
   }
 
   public addBranch(
-    node: PipelineNode<T, K>,
+    node: PipelineNode<T>,
     conditionValue: T,
-    nextNode: PipelineNode<T, K>,
+    nextNode: PipelineNode<T>,
   ): void {
     if (!node.branches) {
       node.branches = new Map();
@@ -78,7 +78,7 @@ export class Pipeline<T, K extends string | number = any> {
   }
 
   private async executeNode(
-    node: PipelineNode<T, K>,
+    node: PipelineNode<T>,
     input: T,
     context: PipelineContext<T>,
   ): Promise<T> {
@@ -90,13 +90,12 @@ export class Pipeline<T, K extends string | number = any> {
     const result = await node.step(input, context);
 
     if (node.branches && node.branches.size > 0) {
-      const conditionResult = await node.step(input, context);
-      const nextNode = node.branches.get(conditionResult);
+      const nextNode = node.branches.get(result);
       if (nextNode) {
         return await this.executeNode(nextNode, result, context);
       } else {
         throw new Error(
-          `No branch was found for the condition result: ${conditionResult}`,
+          `No branch was found for the condition result: ${String(result)}`,
         );
       }
     } else if (node.nextNode) {
